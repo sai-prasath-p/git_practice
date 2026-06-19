@@ -1,1 +1,2 @@
 Line inside file C
+Adding Line 2 to file C
