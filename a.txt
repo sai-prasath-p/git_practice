@@ -1,1 +1,3 @@
 Line inside file A
+Adding a second line to file A
+Adding Line 3 to file A
