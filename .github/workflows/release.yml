@@ -1,0 +1,46 @@
+name: Automated Release Pipeline
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetches all tags necessary for git describe
+
+      - name: Calculate and Increment Version Tag
+        id: versioning
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Fetch tags from remote tracking line
+          git fetch --tags
+          
+          # Get latest tag, or default to v1.0.0 if none exists
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v1.0.0")
+          echo "Current latest tag: $LATEST_TAG"
+          
+          # Parse version components (vMAJOR.MINOR.PATCH)
+          VERSION=${LATEST_TAG#v}
+          IFS='.' read -r major minor patch <<< "$VERSION"
+          
+          # Increment patch number
+          NEW_PATCH=$((patch + 1))
+          NEW_TAG="v$major.$minor.$NEW_PATCH"
+          echo "Next calculated version tag: $NEW_TAG"
+          echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
+
+      - name: Deploy Official GitHub Release via CLI
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create ${{ steps.versioning.outputs.new_tag }} \
+            --title "Release ${{ steps.versioning.outputs.new_tag }}" \
+            --notes "Automated deployment verification metric completed for HW-15."
