@@ -5,3 +5,4 @@ Experimental line in A
 Line 5 inside file A
 Reflog track line 1
 Reflog track line 2
+Reflog track line 3
