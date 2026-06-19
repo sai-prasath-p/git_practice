@@ -1,3 +1,5 @@
 Line inside file B
 Adding a second line to file B
 Adding Line 3 to file B
+Another edit to file B
+Corrected line in B
