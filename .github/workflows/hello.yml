@@ -1,0 +1,13 @@
+name: Minimal CI Verification
+
+on: [push]
+
+jobs:
+  say-hello:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Execute Logging Script
+        run: |
+          echo "Hello from CI!"
+          date
+          echo "Triggering Commit Hash: ${{ github.sha }}"
