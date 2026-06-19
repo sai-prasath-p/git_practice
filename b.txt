@@ -4,3 +4,4 @@ Adding Line 3 to file B
 Another edit to file B
 Corrected line in B
 Line 5 inside file B
+Line 6 inside file B
