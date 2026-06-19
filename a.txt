@@ -1,4 +1,4 @@
-main version
+merged: main and other versions
 Adding a second line to file A
 Adding Line 3 to file A
 Experimental line in A
