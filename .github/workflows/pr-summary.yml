@@ -1,0 +1,37 @@
+name: Pull Request Automated Review Summary
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  summarize:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      - name: Checkout Repository Code Tree
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate PR Metrics and Summary
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          echo "### 📊 Pull Request Change Metrics Summary" > summary.md
+          echo "" >> summary.md
+          echo "#### 📈 Git Diff Statistics:" >> summary.md
+          echo "\`\`\`text" >> summary.md
+          git diff --stat origin/main >> summary.md
+          echo "\`\`\`" >> summary.md
+          
+          echo "#### ⚠️ Code Technical Debt Audit (TODO/FIXME):" >> summary.md
+          echo "\`\`\`text" >> summary.md
+          git diff origin/main | grep -E "^\+.*(TODO|FIXME)" || echo "No outstanding technical debt markers found in this patch." >> summary.md
+          echo "\`\`\`" >> summary.md
+          
+          # Post or update the single comment thread on the Pull Request via GitHub CLI
+          gh pr comment $PR_NUMBER --body-file summary.md
