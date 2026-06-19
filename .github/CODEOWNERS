@@ -1,0 +1,3 @@
+# Automate code reviews based on repository directories
+*.sv @sai-prasath-p
+.github/workflows/* @sai-prasath-p
