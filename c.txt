@@ -1,3 +1,4 @@
 Line inside file C
 Adding Line 2 to file C
 Line 3 inside file C
+Line 4 inside file C
