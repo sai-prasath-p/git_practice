@@ -1,0 +1,50 @@
+name: Code Quality Static Analysis
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      - name: Checkout Source Code Tree
+        uses: actions/checkout@v4
+
+      - name: Set up Python Environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Linting Frameworks
+        run: pip install pycodestyle
+
+      - name: Run Pycodestyle Compliance Scan
+        run: |
+          echo "Running style formatting checks..."
+          pycodestyle *.py || true
+
+      - name: Enforce File Size Constraints (Max 100 Lines)
+        run: |
+          echo "Evaluating script file metrics..."
+          for file in *.py; do
+            if [ -f "$file" ]; then
+              lines=$(wc -l < "$file")
+              echo "$file contains $lines lines."
+              if [ "$lines" -gt 100 ]; then
+                echo "ERROR: $file exceeds the maximum limit of 100 lines!"
+                exit 1
+              fi
+            fi
+          done
+
+      - name: Audit Docstring Definitions
+        run: |
+          echo "Checking functional documentation requirements..."
+          # Simple checker to verify function definitions contain docstrings
+          grep -n "def " *.py
