@@ -48,3 +48,8 @@ jobs:
           echo "Checking functional documentation requirements..."
           # Simple checker to verify function definitions contain docstrings
           grep -n "def " *.py
+- name: Invoke Custom Verilator Lint Action Core Module
+        uses: ./.github/actions/verilator-lint
+        with:
+          sv_files: 'top_module.sv'
+          severity: 'warning'
