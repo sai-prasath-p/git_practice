@@ -1,4 +1,4 @@
-name: Python CI Pipeline
+name: Python Matrix CI Pipeline
 
 on:
   push:
@@ -8,19 +8,26 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, ubuntu-20.04]
+        python-version: ['3.10', '3.11']
+
+    runs-on: ${{ matrix.os }}
+    
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-          cache: 'pip' # Automatically caches dependency installations based on requirements.txt
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
 
       - name: Install Dependencies
         run: pip install -r requirements.txt
 
-      - name: Run Unit Tests
+      - name: Run Matrix Unit Tests
         run: pytest test_calculator.py
